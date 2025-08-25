@@ -1,0 +1,143 @@
+//Maximize median after doing k addition operation
+
+// Java Code : 
+
+class Solution {
+       static boolean canMake(int[] a, long target, long k) {
+        int n = a.length;
+
+        // Odd length: ensure a[i] >= target for all i from mid..n-1
+        if ((n & 1) == 1) {
+            for (int i = n / 2; i < n; i++) {
+                if (a[i] < target) {
+                    k -= (target - a[i]);
+                    if (k < 0) return false;
+                }
+            }
+            return true;
+        }
+
+        // Even length:
+        int r = n / 2 - 1;     // lower middle index
+        int s = n / 2;         // upper middle index
+
+        // 1) Make sure everything strictly to the right of s is at least target,
+        //    otherwise a smaller element could slide into the middle pair.
+        for (int i = s + 1; i < n; i++) {
+            if (a[i] < target) {
+                k -= (target - a[i]);
+                if (k < 0) return false;
+            }
+        }
+
+        long ar = a[r], as = a[s];
+
+        // 2) Ensure (ar' + as') >= 2 * target with minimal increments.
+        if (as <= target) {
+            // both middles must be lifted up to target
+            k -= (target - as);
+            k -= (target - ar);
+        } else {
+            // as already > target; only total sum needs to reach 2*target
+            long need = 2 * target - (ar + as);
+            if (need > 0) k -= need;
+        }
+
+        return k >= 0;
+    }
+
+    static long maximizeMedian(int[] arr, long k) {
+        Arrays.sort(arr);
+        int n = arr.length;
+
+        long low, high;
+        if ((n & 1) == 1) {
+            low  = arr[n / 2];
+            high = arr[n / 2] + k;         // safe upper bound
+        } else {
+            // floor of the average as a starting lower bound
+            low  = (arr[n / 2 - 1] + arr[n / 2]) / 2L;
+            high = arr[n / 2] + k;         // safe upper bound
+        }
+
+        long ans = low;
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+            if (canMake(arr, mid, k)) {
+                ans = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return ans;
+    }
+}
+
+
+
+// C++ Code : 
+
+class Solution {
+  public:
+   static bool canMake(const vector<int>& a, long long target, long long k) {
+      int n = (int)a.size();
+  
+      if (n % 2 == 1) {
+          for (int i = n / 2; i < n; ++i) {
+              if (a[i] < target) {
+                  k -= (target - a[i]);
+                  if (k < 0) return false;
+              }
+          }
+          return true;
+      }
+  
+      int r = n / 2 - 1; // lower middle
+      int s = n / 2;     // upper middle
+  
+      for (int i = s + 1; i < n; ++i) {
+          if (a[i] < target) {
+              k -= (target - a[i]);
+              if (k < 0) return false;
+          }
+      }
+  
+      long long ar = a[r], as = a[s];
+      if (as <= target) {
+          k -= (target - as);
+          k -= (target - ar);
+      } else {
+          long long need = 2 * target - (ar + as);
+          if (need > 0) k -= need;
+      }
+  
+      return k >= 0;
+  }
+  
+  long long maximizeMedian(vector<int> a, long long k) {
+      sort(a.begin(), a.end());
+      int n = (int)a.size();
+  
+      long long low, high;
+      if (n % 2 == 1) {
+          low  = a[n / 2];
+          high = a[n / 2] + k;
+      } else {
+          low  = (a[n / 2 - 1] + a[n / 2]) / 2LL;
+          high = a[n / 2] + k;
+      }
+  
+      long long ans = low;
+      while (low <= high) {
+          long long mid = low + (high - low) / 2;
+          if (canMake(a, mid, k)) {
+              ans = mid;
+              low = mid + 1;
+          } else {
+              high = mid - 1;
+          }
+      }
+      return ans;
+  }
+};
