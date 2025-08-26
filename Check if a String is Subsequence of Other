@@ -1,0 +1,54 @@
+Check if a String is Subsequence of Other
+
+
+// Java Code : 
+
+class Solution {
+    public boolean isSubSeq(String s1, String s2) {
+        // code here
+        int m = s1.length();
+        int n = s2.length();
+        
+        int i=0, j=0;
+        
+        while(i<m && j<n){
+            
+            if(s1.charAt(i) == s2.charAt(j)){
+                j++;
+                i++;
+            }else j++;
+            
+            if(i>=m) return true;
+        }
+        
+        return false;
+    }
+};
+
+
+
+
+// C++ Code : 
+
+
+class Solution {
+public:
+    bool isSubSeq(string s1, string s2) {
+        int m = s1.length();
+        int n = s2.length();
+        
+        int i = 0, j = 0;
+        
+        while (i < m && j < n) {
+            if (s1[i] == s2[j]) {
+                i++;
+                j++;
+            } else {
+                j++;
+            }
+            if (i >= m) return true;
+        }
+        
+        return (i >= m);
+    }
+};
